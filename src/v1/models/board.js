@@ -32,7 +32,18 @@ const boardSchema = new Schema({
   favouritePosition: {
     type: Number,
     default: 0
-  }
+  },
+  members: [{
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User'
+    },
+    role: {
+      type: String,
+      enum: ['Admin', 'Member', 'Viewer'],
+      default: 'Member'
+    }
+  }],
 }, schemaOptions)
 
 module.exports = mongoose.model('Board', boardSchema)

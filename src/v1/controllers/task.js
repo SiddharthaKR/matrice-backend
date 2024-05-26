@@ -87,3 +87,19 @@ exports.updatePosition = async (req, res) => {
     res.status(500).json(err)
   }
 }
+
+exports.assignTaskToMember = async (req, res) => {
+  const { taskId } = req.params;
+  const { userId } = req.body;
+  try {
+    const task = await Task.findById(taskId);
+    if (!task) {
+      return res.status(404).json({ message: 'Task not found.' });
+    }
+    task.assignedUser = userId;
+    await task.save();
+    res.status(200).json(task);
+  } catch (error) {
+    res.status(500).json({ message: 'Internal server error.', error });
+  }
+};

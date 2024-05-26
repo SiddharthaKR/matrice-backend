@@ -3,6 +3,7 @@ const { param } = require('express-validator')
 const tokenHandler = require('../handlers/tokenHandler')
 const sectionController = require('../controllers/section')
 const validation = require('../handlers/validation')
+const checkPermission = require('../handlers/permissionHandler')
 
 router.post(
   '/',
@@ -13,6 +14,7 @@ router.post(
   }),
   validation.validate,
   tokenHandler.verifyToken,
+  checkPermission('create'),
   sectionController.create
 )
 
@@ -28,6 +30,7 @@ router.put(
       return Promise.reject('invalid section id')
     } else return Promise.resolve()
   }),
+  checkPermission('update'),  
   validation.validate,
   tokenHandler.verifyToken,
   sectionController.update

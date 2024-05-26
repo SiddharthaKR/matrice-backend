@@ -1,12 +1,19 @@
 const Board = require('../models/board')
 const Section = require('../models/section')
 const Task = require('../models/task')
+const User = require('../models/user')
 
 exports.create = async (req, res) => {
   try {
     const boardsCount = await Board.find().count()
     const board = await Board.create({
       user: req.user._id,
+      members: [
+        {
+          user: req.user._id,
+          role: 'Admin'
+        }
+      ],
       position: boardsCount > 0 ? boardsCount : 0
     })
     res.status(201).json(board)
@@ -60,7 +67,8 @@ exports.getOne = async (req, res) => {
 exports.update = async (req, res) => {
   const { boardId } = req.params
   const { title, description, favourite } = req.body
-
+  console.log(title)
+  console.log(description)
   try {
     if (title === '') req.body.title = 'Untitled'
     if (description === '') req.body.description = 'Add description here'
@@ -167,3 +175,53 @@ exports.delete = async (req, res) => {
     res.status(500).json(err)
   }
 }
+
+
+exports.addMember = async (req, res) => {
+  const { boardId } = req.params;
+  const { userId, role } = req.body;
+  try {
+    // Validate role
+    const validRoles = ['Admin', 'Member', 'Viewer'];
+    if (!validRoles.includes(role)) {
+      return res.status(400).json({ message: 'Invalid role.' });
+    }
+
+    // Find the board and check if the user is already a member
+    const board = await Board.findById(boardId);
+    if (!board) {
+      return res.status(404).json({ message: 'Board not found.' });
+    }
+    const isMember = board.members.some(member => member.user.toString() === userId);
+    if (isMember) {
+      return res.status(400).json({ message: 'User is already a member of this board.' });
+    }
+    // Add the new member
+    board.members.push({ user: userId, role });
+    await board.save();
+    res.status(200).json({ message: 'Member added successfully.' });
+  } catch (err) {
+    res.status(500).json(err);
+  }
+};
+
+
+exports.getBoardMembers = async (req, res) => {
+  const { boardId } = req.params;
+  try {
+    const board = await Board.findById(boardId).populate('members.user', 'username'); // Populate members with user details
+    if (!board) {
+      return res.status(404).json({ message: 'Board not found.' });
+    }
+    // Extract user details from members
+    const members = board.members.map(member => ({
+      userId: member.user._id,
+      username: member.user.username,
+      role: member.role
+    }));
+    res.status(200).json(members);
+  } catch (error) {
+    res.status(500).json({ message: 'Internal server error.', error });
+  }
+};
+
