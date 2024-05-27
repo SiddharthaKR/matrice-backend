@@ -69,7 +69,7 @@ exports.getOne = async (req, res) => {
     const isAdmin = board.members.some(member => member.user.toString() === req.user._id.toString() && member.role === 'Admin')
     const sections = await Section.find({ board: boardId })
     for (const section of sections) {
-      const tasks = await Task.find({ section: section.id }).populate('section').sort('-position')
+      const tasks = await Task.find({ section: section.id }).populate('section').populate('assignedTo', 'username email').sort('-position')
       section._doc.tasks = tasks
     }
     board._doc.sections = sections
