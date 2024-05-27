@@ -11,5 +11,11 @@ router.get(
   userController.getAllUsers
 );
 
+router.get(
+  '/getdashboard',
+  tokenHandler.verifyToken,
+  userController.getDashboard
+);
+
 
 module.exports = router
