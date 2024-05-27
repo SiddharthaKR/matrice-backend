@@ -58,7 +58,6 @@ router.put(
   }),
   validation.validate,
   tokenHandler.verifyToken,
-  checkPermission('update'), // Ensure only users with update permissions can update
   boardController.update
 )
 
@@ -77,7 +76,7 @@ router.delete(
 
 // Route to add members to a board
 router.post(
-  '/:boardId/members',
+  '/:boardId/member',
   param('boardId').custom(value => {
     if (!validation.isObjectId(value)) {
       return Promise.reject('invalid id');
@@ -96,7 +95,7 @@ router.get(
 );
 
 router.get(
-  '/members/:boardId',
+  '/:boardId/members',
   param('boardId').custom(value => {
     if (!validation.isObjectId(value)) {
       return Promise.reject('invalid board id');
@@ -104,7 +103,6 @@ router.get(
   }),
   validation.validate,
   tokenHandler.verifyToken,
-  checkPermission('update'), // Ensure only admin can access
   boardController.getBoardMembers
 );
 

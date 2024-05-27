@@ -14,7 +14,6 @@ router.post(
   }),
   validation.validate,
   tokenHandler.verifyToken,
-  checkPermission('create'),
   sectionController.create
 )
 
@@ -30,7 +29,6 @@ router.put(
       return Promise.reject('invalid section id')
     } else return Promise.resolve()
   }),
-  checkPermission('update'),  
   validation.validate,
   tokenHandler.verifyToken,
   sectionController.update

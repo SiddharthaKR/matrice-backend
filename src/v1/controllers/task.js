@@ -96,7 +96,7 @@ exports.assignTaskToMember = async (req, res) => {
     if (!task) {
       return res.status(404).json({ message: 'Task not found.' });
     }
-    task.assignedUser = userId;
+    task.assignedTo = userId;
     await task.save();
     res.status(200).json(task);
   } catch (error) {

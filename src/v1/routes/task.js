@@ -70,7 +70,7 @@ router.put(
 
 
 router.post(
-  '/assign/:taskId',
+  '/:taskId/assign',
   param('boardId').custom(value => {
     if (!validation.isObjectId(value)) {
       return Promise.reject('invalid board id');

@@ -44,6 +44,10 @@ const boardSchema = new Schema({
       default: 'Member'
     }
   }],
+  deadline: {
+    type: Date,
+    required: false
+  },
 }, schemaOptions)
 
 module.exports = mongoose.model('Board', boardSchema)

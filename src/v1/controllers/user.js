@@ -70,6 +70,7 @@ exports.login = async (req, res) => {
 
 exports.getAllUsers = async (req, res) => {
   try {
+    console.log("tried")
     const users = await User.find({}); // Fetch only necessary fields
     res.status(200).json(users);
   } catch (err) {
