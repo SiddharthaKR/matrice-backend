@@ -18,6 +18,14 @@ const taskSchema = new Schema({
   },
   position: {
     type: Number
+  },
+  assignedTo: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
+  },
+  deadline: {
+    type: Date,
+    required: false
   }
 }, schemaOptions)
 
